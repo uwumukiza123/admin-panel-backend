@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package myApp;
+
+message User {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+  string status = 4;
+  string createdAt = 5;
+  string signature = 6;
+}
+
+message Users {
+  repeated User users = 1;
+}

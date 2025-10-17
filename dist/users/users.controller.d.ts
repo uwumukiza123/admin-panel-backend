@@ -3,6 +3,7 @@ import type { Response } from 'express';
 import { UpdateUserDto } from './dto/userDto.dto';
 export declare class UsersController {
     private readonly usersService;
+    private UsersMessage;
     constructor(usersService: UsersService);
     create(body: {
         email: string;

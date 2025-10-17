@@ -3,6 +3,7 @@ import type { Response } from 'express';
 import { UpdateUserDto } from './dto/userDto.dto';
 export declare class UsersController {
     private readonly usersService;
+    private UsersMessage;
     constructor(usersService: UsersService);
     create(body: {
         email: string;
@@ -13,7 +14,7 @@ export declare class UsersController {
     getPublicKey(): {
         key: string;
     };
-    export(res: Response): Promise<void>;
+    export(res: Response): Promise<Response<any, Record<string, any>>>;
     findOne(id: string): Promise<{
         user: import("./users.entity").User;
     }>;

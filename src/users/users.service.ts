@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import * as crypto from 'crypto';
-import { UpdateUserDto } from './dto/userDto.dto';
+import { UserDto } from './dto/userDto.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,14 +22,19 @@ export class UsersService {
     return this.publicKey.export({ type: 'pkcs1', format: 'pem' }).toString();
   }
 
-  async create(email: string, role: string, status: string) {
+  async create({ email, role, status }: UserDto) {
     const hash = crypto.createHash('sha384').update(email).digest('hex');
 
     const signature = crypto
       .sign('sha384', Buffer.from(hash), this.privateKey)
       .toString('base64');
 
-    const user = this.usersRepo.create({ email, role, status, signature });
+    const user = this.usersRepo.create({
+      email: hash,
+      role,
+      status,
+      signature,
+    });
     return this.usersRepo.save(user);
   }
 
@@ -45,7 +50,7 @@ export class UsersService {
     return this.usersRepo.delete(id);
   }
 
-  async update(id: string, updateData: UpdateUserDto): Promise<User> {
+  async update(id: string, updateData: UserDto): Promise<User> {
     const user = await this.usersRepo.findOne({ where: { id } });
 
     if (!user) {

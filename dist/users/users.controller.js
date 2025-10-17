@@ -50,10 +50,15 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const protobuf = __importStar(require("protobufjs"));
 const userDto_dto_1 = require("./dto/userDto.dto");
+const path = __importStar(require("path"));
 let UsersController = class UsersController {
     usersService;
+    UsersMessage;
     constructor(usersService) {
         this.usersService = usersService;
+        const protoPath = path.resolve(__dirname, '../../proto/users.proto');
+        const root = protobuf.loadSync(protoPath);
+        this.UsersMessage = root.lookupType('myApp.Users');
     }
     create(body) {
         return this.usersService.create(body.email, body.role, body.status);
@@ -65,21 +70,17 @@ let UsersController = class UsersController {
         return { key: this.usersService.getPublicKey() };
     }
     async export(res) {
-        const users = await this.usersService.findAll();
-        const root = new protobuf.Root();
-        const UserProto = new protobuf.Type('User')
-            .add(new protobuf.Field('id', 1, 'string'))
-            .add(new protobuf.Field('email', 2, 'string'))
-            .add(new protobuf.Field('role', 3, 'string'))
-            .add(new protobuf.Field('status', 4, 'string'))
-            .add(new protobuf.Field('createdAt', 5, 'string'))
-            .add(new protobuf.Field('signature', 6, 'string'));
-        const UsersProto = new protobuf.Type('Users').add(new protobuf.Field('users', 1, 'User', 'repeated'));
-        root.define('myApp').add(UserProto).add(UsersProto);
-        const UsersMessage = root.lookupType('Users');
-        const buffer = UsersMessage.encode({ users }).finish();
-        res.setHeader('Content-Type', 'application/json');
-        res.send(buffer);
+        const users = (await this.usersService.findAll()).map((u) => ({
+            id: String(u.id),
+            email: u.email,
+            role: u.role,
+            status: u.status,
+            createdAt: u.createdAt?.toISOString?.() || String(u.createdAt),
+            signature: u.signature || '',
+        }));
+        const buffer = this.UsersMessage.encode({ users }).finish();
+        res.setHeader('Content-Type', 'application/x-protobuf');
+        return res.send(buffer);
     }
     async findOne(id) {
         const user = await this.usersService.getOne(id);

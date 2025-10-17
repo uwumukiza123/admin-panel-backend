@@ -30,13 +30,13 @@ It is built with **NestJS**, **TypeORM**, and **SQLite** for lightweight data pe
 
 ## ⚙️ Setup & Run Instructions
 
-### 1️⃣ Prerequisites
+### Prerequisites
 
 - Node.js (v18 or later)
 - npm
 - Nest CLI (optional, for local development)
 
-### 2️⃣ Installation
+### Installation
 
 Clone the repository and navigate to the backend folder:
 

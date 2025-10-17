@@ -49,6 +49,7 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const protobuf = __importStar(require("protobufjs"));
+const userDto_dto_1 = require("./dto/userDto.dto");
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
@@ -77,16 +78,22 @@ let UsersController = class UsersController {
         root.define('myApp').add(UserProto).add(UsersProto);
         const UsersMessage = root.lookupType('Users');
         const buffer = UsersMessage.encode({ users }).finish();
-        res.setHeader('Content-Type', 'application/x-protobuf');
+        res.setHeader('Content-Type', 'application/json');
         res.send(buffer);
     }
     async findOne(id) {
         const user = await this.usersService.getOne(id);
-        return { user: user?.id };
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${id} not found.`);
+        }
+        return { user: user };
     }
     remove(id) {
         this.usersService.delete(id);
         return id;
+    }
+    update(updateUserDto, id) {
+        return this.usersService.update(id, updateUserDto);
     }
 };
 exports.UsersController = UsersController;
@@ -118,7 +125,7 @@ __decorate([
 ], UsersController.prototype, "export", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -131,6 +138,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [userDto_dto_1.UpdateUserDto, String]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "update", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

@@ -3,17 +3,19 @@ import {
   Body,
   Get,
   Delete,
-  Put,
   Post,
   Param,
   Res,
-  Req,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  Patch,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import type { Response } from 'express';
 import * as protobuf from 'protobufjs';
+import { UpdateUserDto } from './dto/userDto.dto';
 
 @Controller('users')
 export class UsersController {
@@ -58,16 +60,17 @@ export class UsersController {
 
     const buffer = UsersMessage.encode({ users }).finish();
 
-    res.setHeader('Content-Type', 'application/x-protobuf');
+    res.setHeader('Content-Type', 'application/json');
     res.send(buffer);
   }
 
   @Get(':id')
-  //   @HttpCode(HttpStatus.OK)
-  async findOne(@Param() id: string) {
+  async findOne(@Param('id') id: string) {
     const user = await this.usersService.getOne(id);
-
-    return { user: user?.id };
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found.`);
+    }
+    return { user: user };
   }
 
   @Delete(':id')
@@ -78,9 +81,9 @@ export class UsersController {
     return id;
   }
 
-  //   @Put(':id')
-  //   update(@Body() body: {email: string, role: string, status: string}, @Param() id: string) {
-  //     const userData = (body.email, body.role, body.status)
-  //     return this.usersService.update(userData, id)
-  //   }
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  update(@Body() updateUserDto: UpdateUserDto, @Param('id') id: string) {
+    return this.usersService.update(id, updateUserDto);
+  }
 }

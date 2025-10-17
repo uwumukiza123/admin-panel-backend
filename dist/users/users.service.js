@@ -83,12 +83,13 @@ let UsersService = class UsersService {
     delete(id) {
         return this.usersRepo.delete(id);
     }
-    update(id, user) {
-        const getUser = this.usersRepo.findOne({ where: { id } });
-        if (!getUser) {
-            throw new common_1.NotFoundException(`User with ID${id} not found`);
+    async update(id, updateData) {
+        const user = await this.usersRepo.findOne({ where: { id } });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${id} not found.`);
         }
-        return this.usersRepo.update(id, user);
+        const mergedUser = this.usersRepo.merge(user, updateData);
+        return this.usersRepo.save(mergedUser);
     }
 };
 exports.UsersService = UsersService;

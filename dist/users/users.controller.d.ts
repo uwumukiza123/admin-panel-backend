@@ -1,5 +1,6 @@
 import { UsersService } from './users.service';
 import type { Response } from 'express';
+import { UpdateUserDto } from './dto/userDto.dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
@@ -14,7 +15,8 @@ export declare class UsersController {
     };
     export(res: Response): Promise<void>;
     findOne(id: string): Promise<{
-        user: string | undefined;
+        user: import("./users.entity").User;
     }>;
     remove(id: string): string;
+    update(updateUserDto: UpdateUserDto, id: string): Promise<import("./users.entity").User>;
 }

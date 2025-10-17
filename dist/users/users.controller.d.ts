@@ -13,7 +13,7 @@ export declare class UsersController {
     getPublicKey(): {
         key: string;
     };
-    export(res: Response): Promise<void>;
+    export(res: Response): Promise<Response<any, Record<string, any>>>;
     findOne(id: string): Promise<{
         user: import("./users.entity").User;
     }>;

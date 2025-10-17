@@ -29,7 +29,12 @@ export class UsersService {
       .sign('sha384', Buffer.from(hash), this.privateKey)
       .toString('base64');
 
-    const user = this.usersRepo.create({ email, role, status, signature });
+    const user = this.usersRepo.create({
+      email: hash,
+      role,
+      status,
+      signature,
+    });
     return this.usersRepo.save(user);
   }
 

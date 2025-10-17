@@ -65,8 +65,16 @@ let UsersController = class UsersController {
         return { key: this.usersService.getPublicKey() };
     }
     async export(res) {
-        const users = await this.usersService.findAll();
+        const users = (await this.usersService.findAll()).map((u) => ({
+            id: String(u.id),
+            email: u.email,
+            role: u.role,
+            status: u.status,
+            createdAt: u.createdAt?.toISOString?.() || String(u.createdAt),
+            signature: u.signature || '',
+        }));
         const root = new protobuf.Root();
+        const myApp = root.define('myApp');
         const UserProto = new protobuf.Type('User')
             .add(new protobuf.Field('id', 1, 'string'))
             .add(new protobuf.Field('email', 2, 'string'))
@@ -75,11 +83,11 @@ let UsersController = class UsersController {
             .add(new protobuf.Field('createdAt', 5, 'string'))
             .add(new protobuf.Field('signature', 6, 'string'));
         const UsersProto = new protobuf.Type('Users').add(new protobuf.Field('users', 1, 'User', 'repeated'));
-        root.define('myApp').add(UserProto).add(UsersProto);
-        const UsersMessage = root.lookupType('Users');
+        myApp.add(UserProto).add(UsersProto);
+        const UsersMessage = root.lookupType('myApp.Users');
         const buffer = UsersMessage.encode({ users }).finish();
-        res.setHeader('Content-Type', 'application/json');
-        res.send(buffer);
+        res.setHeader('Content-Type', 'application/x-protobuf');
+        return res.send(buffer);
     }
     async findOne(id) {
         const user = await this.usersService.getOne(id);

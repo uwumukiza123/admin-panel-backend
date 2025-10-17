@@ -10,7 +10,6 @@ import {
   HttpStatus,
   NotFoundException,
   Patch,
-  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import type { Response } from 'express';
@@ -38,9 +37,17 @@ export class UsersController {
 
   @Get('/export')
   async export(@Res() res: Response) {
-    const users = await this.usersService.findAll();
+    const users = (await this.usersService.findAll()).map((u) => ({
+      id: String(u.id),
+      email: u.email,
+      role: u.role,
+      status: u.status,
+      createdAt: u.createdAt?.toISOString?.() || String(u.createdAt),
+      signature: u.signature || '',
+    }));
 
     const root = new protobuf.Root();
+    const myApp = root.define('myApp');
 
     const UserProto = new protobuf.Type('User')
       .add(new protobuf.Field('id', 1, 'string'))
@@ -54,14 +61,13 @@ export class UsersController {
       new protobuf.Field('users', 1, 'User', 'repeated'),
     );
 
-    root.define('myApp').add(UserProto).add(UsersProto);
+    myApp.add(UserProto).add(UsersProto);
 
-    const UsersMessage = root.lookupType('Users');
-
+    const UsersMessage = root.lookupType('myApp.Users');
     const buffer = UsersMessage.encode({ users }).finish();
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(buffer);
+    res.setHeader('Content-Type', 'application/x-protobuf');
+    return res.send(buffer);
   }
 
   @Get(':id')

@@ -1,10 +1,9 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsNotEmpty } from 'class-validator';
 
-// All fields are optional because this is a partial update (PATCH)
-export class UpdateUserDto {
-  @IsOptional()
-  @IsString()
-  email?: string;
+export class UserDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @IsOptional()
   @IsString()

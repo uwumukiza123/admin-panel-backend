@@ -14,8 +14,9 @@ import {
 import { UsersService } from './users.service';
 import type { Response } from 'express';
 import * as protobuf from 'protobufjs';
-import { UpdateUserDto } from './dto/userDto.dto';
+import { UserDto } from './dto/userDto.dto';
 import * as path from 'path';
+import { User } from './users.entity';
 
 @Controller('users')
 export class UsersController {
@@ -28,8 +29,8 @@ export class UsersController {
   }
 
   @Post()
-  create(@Body() body: { email: string; role: string; status: string }) {
-    return this.usersService.create(body.email, body.role, body.status);
+  create(@Body() createUserDto: User) {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -78,7 +79,7 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  update(@Body() updateUserDto: UpdateUserDto, @Param('id') id: string) {
+  update(@Body() updateUserDto: UserDto, @Param('id') id: string) {
     return this.usersService.update(id, updateUserDto);
   }
 }

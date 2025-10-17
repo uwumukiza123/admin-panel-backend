@@ -8,7 +8,7 @@ export declare class UsersService {
     getPublicKey(): string;
     create(email: string, role: string, status: string): Promise<User>;
     findAll(): Promise<User[]>;
-    findOne(id: string): Promise<User | null>;
-    delete(id: string): void;
+    getOne(id: string): Promise<User | null>;
+    delete(id: string): Promise<import("typeorm").DeleteResult>;
     update(id: string, user: User): Promise<import("typeorm").UpdateResult>;
 }

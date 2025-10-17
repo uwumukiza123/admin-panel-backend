@@ -81,7 +81,7 @@ let UsersController = class UsersController {
         res.send(buffer);
     }
     async findOne(id) {
-        const user = await this.usersService.findOne(id);
+        const user = await this.usersService.getOne(id);
         return { user: user?.id };
     }
     remove(id) {
@@ -118,7 +118,6 @@ __decorate([
 ], UsersController.prototype, "export", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

@@ -36,12 +36,12 @@ export class UsersService {
     return this.usersRepo.find();
   }
 
-  findOne(id: string) {
+  getOne(id: string) {
     return this.usersRepo.findOne({ where: { id } });
   }
 
   delete(id: string) {
-    this.usersRepo.delete(id);
+    return this.usersRepo.delete(id);
   }
 
   update(id: string, user: User) {

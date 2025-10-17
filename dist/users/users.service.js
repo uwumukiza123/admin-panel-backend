@@ -77,11 +77,11 @@ let UsersService = class UsersService {
     findAll() {
         return this.usersRepo.find();
     }
-    findOne(id) {
+    getOne(id) {
         return this.usersRepo.findOne({ where: { id } });
     }
     delete(id) {
-        this.usersRepo.delete(id);
+        return this.usersRepo.delete(id);
     }
     update(id, user) {
         const getUser = this.usersRepo.findOne({ where: { id } });

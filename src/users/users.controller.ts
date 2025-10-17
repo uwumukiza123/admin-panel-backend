@@ -63,9 +63,9 @@ export class UsersController {
   }
 
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
+  //   @HttpCode(HttpStatus.OK)
   async findOne(@Param() id: string) {
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.getOne(id);
 
     return { user: user?.id };
   }

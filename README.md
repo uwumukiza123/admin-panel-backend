@@ -28,7 +28,7 @@ It is built with **NestJS**, **TypeORM**, and **SQLite** for lightweight data pe
 
 ---
 
-## Setup & Run Instructions
+## ⚙️ Setup & Run Instructions
 
 ### Prerequisites
 

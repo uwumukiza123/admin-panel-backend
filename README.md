@@ -41,7 +41,7 @@ It is built with **NestJS**, **TypeORM**, and **SQLite** for lightweight data pe
 Clone the repository and navigate to the backend folder:
 
 ```bash
-git clone <your_repo_url>
+git clone https://github.com/uwumukiza123/admin-panel-backend.git
 cd backend
 npm install
 ```

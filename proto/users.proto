@@ -5,10 +5,11 @@ package myApp;
 message User {
   string id = 1;
   string email = 2;
-  string role = 3;
-  string status = 4;
-  string createdAt = 5;
-  string signature = 6;
+  string hashedEmail = 3;
+  string role = 4;
+  string status = 5;
+  string createdAt = 6;
+  string signature = 7;
 }
 
 message Users {

@@ -48,6 +48,7 @@ export class UsersController {
     const users = (await this.usersService.findAll()).map((u) => ({
       id: String(u.id),
       email: u.email,
+      hashedEmail: u.hashedEmail,
       role: u.role,
       status: u.status,
       createdAt: u.createdAt?.toISOString?.() || String(u.createdAt),

@@ -13,6 +13,9 @@ export class User {
   @Column()
   email: string;
 
+  @Column({ nullable: true })
+  hashedEmail?: string;
+
   @Column()
   role: string;
 

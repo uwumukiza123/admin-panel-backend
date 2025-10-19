@@ -23,18 +23,26 @@ export class UsersService {
   }
 
   async create({ email, role, status }: UserDto) {
-    const hash = crypto.createHash('sha384').update(email).digest('hex');
+    const hashedEmail = crypto.createHash('sha384').update(email).digest('hex');
 
     const signature = crypto
-      .sign('sha384', Buffer.from(hash), this.privateKey)
+      .sign('sha384', Buffer.from(hashedEmail), this.privateKey)
       .toString('base64');
 
+    const users = await this.usersRepo.find();
+    for (const u of users) {
+      u.hashedEmail = crypto.createHash('sha384').update(u.email).digest('hex');
+      await this.usersRepo.save(u);
+    }
+
     const user = this.usersRepo.create({
-      email: hash,
+      email,
       role,
       status,
       signature,
+      hashedEmail,
     });
+
     return this.usersRepo.save(user);
   }
 

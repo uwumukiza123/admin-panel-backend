@@ -44,4 +44,5 @@ Clone the repository and navigate to the backend folder:
 git clone https://github.com/uwumukiza123/admin-panel-backend.git
 cd backend
 npm install
+npm run start:dev
 ```
